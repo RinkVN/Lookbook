@@ -1,0 +1,477 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+
+body,
+html {
+  height: 100dvh;
+  width: 100dvw;
+  background: radial-gradient(circle at top, #3c352e 0%, #1c1815 60%, #14110f 100%);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.page {
+  background: linear-gradient(145deg, #f5efe6 0%, #e7d9c8 100%);
+  border-radius: 6px;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+  position: relative;
+}
+
+.page-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 44px 40px;
+}
+
+.cover {
+  background: linear-gradient(135deg, #5c2c2c 0%, #3b2621 100%);
+  color: #fef2dc;
+}
+
+.lookbook-cover {
+  gap: 18px;
+  text-align: left;
+}
+
+.lookbook-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(254, 242, 220, 0.12);
+  border: 1px solid rgba(254, 242, 220, 0.4);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lookbook-title-main {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.lookbook-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 400;
+  color: rgba(254, 242, 220, 0.8);
+}
+
+.lookbook-guideline-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: rgba(254, 242, 220, 0.82);
+}
+
+.lookbook-guideline-list li::before {
+  content: "—";
+  margin-right: 10px;
+  color: rgba(255, 196, 132, 0.9);
+}
+
+.lookbook-page {
+  gap: 20px;
+  text-align: left;
+  color: #362820;
+}
+
+.lookbook-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lookbook-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(54, 40, 32, 0.65);
+}
+
+.lookbook-section {
+  font-weight: 600;
+}
+
+.lookbook-id {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(90, 70, 54, 0.4);
+  color: rgba(40, 30, 24, 0.7);
+}
+
+.lookbook-title {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.lookbook-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lookbook-image-frame {
+  width: 100%;
+  height: 260px;
+  background: rgba(206, 180, 152, 0.25);
+  border: 1px dashed rgba(139, 110, 82, 0.55);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.lookbook-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(80%) contrast(105%);
+}
+
+.lookbook-image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: rgba(54, 40, 32, 0.7);
+}
+
+.lookbook-image-placeholder small {
+  font-size: 0.7rem;
+  color: rgba(54, 40, 32, 0.55);
+}
+
+.lookbook-image-note {
+  font-size: 0.85rem;
+  color: rgba(54, 40, 32, 0.75);
+  line-height: 1.4;
+}
+
+.lookbook-quote {
+  font-family: "Times New Roman", serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: #7b3c32;
+  background: rgba(196, 152, 120, 0.22);
+  border-left: 3px solid rgba(139, 89, 64, 0.9);
+  padding: 10px 16px;
+  border-radius: 6px;
+}
+
+.lookbook-description {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(40, 30, 24, 0.85);
+  letter-spacing: 0.01em;
+}
+
+.lookbook-wrapper {
+  position: relative;
+  overflow: visible;
+  padding: 18px;
+}
+
+.lookbook-flipbook {
+  overflow: visible !important;
+}
+
+.lookbook-wrapper::before,
+.lookbook-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 26px;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.28);
+  opacity: 0.4;
+}
+
+.lookbook-wrapper::after {
+  filter: blur(20px);
+  opacity: 0.15;
+}
+
+.bookshelf-scene {
+  position: relative;
+  width: min(100%, 960px);
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1600px;
+  transition: filter 0.35s ease;
+}
+
+.bookshelf-scene.book-open {
+  filter: blur(2px) brightness(0.85);
+}
+
+
+.bookshelf {
+  position: relative;
+  width: 80%;
+  max-width: 780px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transform: translateY(20px);
+  z-index: 2;
+}
+
+.shelf-books {
+  display: flex;
+  gap: 28px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 32px;
+}
+
+.book-cover {
+  width: 170px;
+  height: 240px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.55);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  color: rgba(254, 242, 220, 0.9);
+  position: relative;
+}
+
+.book-cover::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  right: -12px;
+  width: 10px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(90deg, rgba(235, 205, 150, 0.75), rgba(185, 150, 108, 0.5));
+  box-shadow: inset -2px 0 3px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+.book-cover:disabled {
+  cursor: default;
+  filter: grayscale(10%) brightness(0.92);
+}
+
+.book-cover--active:hover {
+  transform: translateY(-10px) rotateY(-6deg) scale(1.04);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.7);
+}
+
+.book-cover--active:focus-visible {
+  outline: 2px solid rgba(233, 198, 140, 0.85);
+  outline-offset: 4px;
+}
+
+.book-cover--static {
+  pointer-events: none;
+  opacity: 0.78;
+  transform: translateY(6px) scale(0.98);
+}
+
+.book-cover-tag {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 214, 167, 0.75);
+}
+
+.book-cover-title {
+  font-size: 1.05rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.book-cover-year {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 225, 190, 0.7);
+}
+
+.book-cover--primary {
+  background: linear-gradient(150deg, #6b2c20 0%, #39130d 100%);
+}
+
+.book-cover--neutral {
+  background: linear-gradient(150deg, #8a8478 0%, #3f3a33 100%);
+}
+
+.book-cover--dark {
+  background: linear-gradient(150deg, #1e1f26 0%, #0b0b0f 100%);
+}
+
+.shelf-board {
+  width: 100%;
+  height: 46px;
+  background-image: url('http://www.turnjs.com/pics/wall-bookshelf.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 0 0 18px 18px;
+  box-shadow: inset 0 8px 18px rgba(0, 0, 0, 0.35), 0 30px 60px rgba(0, 0, 0, 0.45);
+  transform-origin: top;
+  transform: perspective(1200px) rotateX(12deg);
+}
+
+.book-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.book-modal.visible {
+  pointer-events: auto;
+}
+
+.book-modal-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px 28px;
+
+  opacity: 0;
+  transform: translateY(20px) scale(0.92);
+  transition: opacity 0.35s ease, transform 0.4s ease;
+}
+
+.book-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 10, 9, 0.78);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.book-modal.visible .book-modal-overlay {
+  opacity: 1;
+}
+
+.book-modal-content {
+  position: relative;
+  transform: scale(0.72) translateY(40px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease;
+  max-height: 90vh;
+  overflow: visible;
+  border-radius: 18px;
+  padding: 0;
+  background: transparent;
+}
+
+.book-modal.visible .book-modal-shell {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.book-modal.visible .book-modal-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-close {
+  position: absolute;
+  top: -42px;
+  right: -38px;
+  width: 50px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(32, 24, 19, 0.82);
+  color: rgba(254, 242, 220, 0.95);
+  font-size: 1.6rem;
+  cursor: pointer;
+  z-index: 5;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.modal-close:hover {
+  background: rgba(32, 24, 19, 0.95);
+  transform: translateY(-2px) scale(1.05);
+}
+
+.book-modal-content .page {
+  box-shadow: none;
+}
+
+@media (max-width: 1024px) {
+
+  html,
+  body {
+    overflow: auto;
+  }
+
+  .bookshelf-scene {
+    height: auto;
+  }
+
+  .book-modal-content {
+    transform: scale(0.62) translateY(60px);
+  }
+}
+
+@media (max-width: 768px) {
+  .lookbook-image-frame {
+    height: 200px;
+  }
+
+  .book-modal-content {
+    transform: scale(0.5) translateY(60px);
+  }
+
+  .modal-close {
+    top: -32px;
+    right: -14px;
+    width: 50px;
+    height: 56px;
+  }
+}
