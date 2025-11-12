@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Lookbook from './components/Lookbook';
 import BacHoBook from './components/BacHoBook';
 import './App.css';
+import useFullscreenFallback from './hooks/useFullscreenFallback';
 
 const shelfBooks = [
   {
@@ -37,9 +38,8 @@ const bookComponents = {
 
 function App() {
   const [openBookId, setOpenBookId] = useState(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const ActiveBook = openBookId ? bookComponents[openBookId] : null;
-  const modalRef = React.useRef(null);
+  const { fullscreenRef, isFullscreen, enter, exit } = useFullscreenFallback();
 
   const handleOpen = (book) => {
     if (book.interactive) {
@@ -47,140 +47,38 @@ function App() {
     }
   };
 
-  const handleClose = () => {
-    // Thoát fullscreen trước khi đóng
-    if (isFullscreen) {
-      exitFullscreen();
-    }
-    setOpenBookId(null);
-  };
-
-  const enterFullscreen = async () => {
-    const element = modalRef.current;
-
-    if (!element) {
-      console.error('Modal ref not found');
-      return;
-    }
-
+  const handleClose = useCallback(async () => {
     try {
-      // Chrome ưu tiên requestFullscreen() chuẩn
-      if (element.requestFullscreen) {
-        await element.requestFullscreen();
-        console.log('Fullscreen entered (standard API)');
+      if (isFullscreen) {
+        await exit();
       }
-      // Fallback cho các trình duyệt khác
-      else if (element.webkitRequestFullscreen) {
-        await element.webkitRequestFullscreen();
-        console.log('Fullscreen entered (webkit)');
-      } else if (element.mozRequestFullScreen) {
-        await element.mozRequestFullScreen();
-        console.log('Fullscreen entered (moz)');
-      } else if (element.msRequestFullscreen) {
-        await element.msRequestFullscreen();
-        console.log('Fullscreen entered (ms)');
-      } else {
-        console.error('Fullscreen API not supported');
-      }
-    } catch (err) {
-      console.error('Fullscreen error:', err);
-      // Nếu lỗi, thử với document.documentElement như fallback
-      try {
-        const docElement = document.documentElement;
-        if (docElement.requestFullscreen) {
-          await docElement.requestFullscreen();
-          console.log('Fullscreen entered (fallback to documentElement)');
-        }
-      } catch (fallbackErr) {
-        console.error('Fullscreen fallback error:', fallbackErr);
-      }
+    } catch (error) {
+      console.error('Exit fullscreen before close failed:', error);
+    } finally {
+      setOpenBookId(null);
     }
-  };
-
-  const exitFullscreen = async () => {
-    try {
-      // Chrome ưu tiên exitFullscreen() chuẩn
-      if (document.exitFullscreen) {
-        await document.exitFullscreen();
-        console.log('Fullscreen exited (standard API)');
-      } else if (document.webkitExitFullscreen) {
-        await document.webkitExitFullscreen();
-        console.log('Fullscreen exited (webkit)');
-      } else if (document.mozCancelFullScreen) {
-        await document.mozCancelFullScreen();
-        console.log('Fullscreen exited (moz)');
-      } else if (document.msExitFullscreen) {
-        await document.msExitFullscreen();
-        console.log('Fullscreen exited (ms)');
-      }
-    } catch (err) {
-      console.error('Exit fullscreen error:', err);
-    }
-  };
-
-  const toggleFullscreen = async () => {
-    try {
-      // Chrome sử dụng fullscreenElement chuẩn
-      const isCurrentlyFullscreen = !!(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement ||
-        document.msFullscreenElement
-      );
-
-      console.log('Toggle fullscreen - Current state:', isCurrentlyFullscreen);
-
-      if (isCurrentlyFullscreen) {
-        await exitFullscreen();
-      } else {
-        await enterFullscreen();
-      }
-    } catch (err) {
-      console.error('Toggle fullscreen error:', err);
-    }
-  };
+  }, [exit, isFullscreen]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && openBookId) {
-        const isCurrentlyFullscreen = !!(
-          document.fullscreenElement ||
-          document.webkitFullscreenElement ||
-          document.mozFullScreenElement ||
-          document.msFullscreenElement
-        );
-        if (isCurrentlyFullscreen) {
-          exitFullscreen();
+    if (!openBookId) {
+      return undefined;
+    }
+
+    const handleKeyDown = async (e) => {
+      if (e.key === 'Escape') {
+        if (isFullscreen) {
+          await exit();
         } else {
-          handleClose();
+          setOpenBookId(null);
         }
       }
-    };
-
-    const handleFullscreenChange = () => {
-      const isCurrentlyFullscreen = !!(
-        document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement ||
-        document.msFullscreenElement
-      );
-      setIsFullscreen(isCurrentlyFullscreen);
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
-  }, [openBookId]);
+  }, [openBookId, isFullscreen, exit]);
 
   return (
     <>
@@ -217,7 +115,7 @@ function App() {
 
       <div
         className={`book-modal ${openBookId ? 'visible' : ''}`}
-        ref={modalRef}
+        ref={fullscreenRef}
       >
         <div className="book-modal-overlay" onClick={handleClose} />
         <div
@@ -232,54 +130,14 @@ function App() {
             onClick={async (e) => {
               e.stopPropagation();
               e.preventDefault();
-              console.log('Fullscreen button clicked');
-
-              const element = modalRef.current;
-              if (!element) {
-                console.error('Modal ref not found');
-                return;
-              }
-
               try {
-                // Kiểm tra trạng thái fullscreen hiện tại
-                const isCurrentlyFullscreen = !!(
-                  document.fullscreenElement ||
-                  document.webkitFullscreenElement ||
-                  document.mozFullScreenElement ||
-                  document.msFullscreenElement
-                );
-
-                if (isCurrentlyFullscreen) {
-                  // Thoát fullscreen
-                  if (document.exitFullscreen) {
-                    await document.exitFullscreen();
-                  } else if (document.webkitExitFullscreen) {
-                    await document.webkitExitFullscreen();
-                  } else if (document.mozCancelFullScreen) {
-                    await document.mozCancelFullScreen();
-                  } else if (document.msExitFullscreen) {
-                    await document.msExitFullscreen();
-                  }
+                if (isFullscreen) {
+                  await exit();
                 } else {
-                  // Vào fullscreen - Chrome ưu tiên API chuẩn
-                  if (element.requestFullscreen) {
-                    await element.requestFullscreen();
-                    console.log('Fullscreen entered (Chrome standard API)');
-                  } else if (element.webkitRequestFullscreen) {
-                    await element.webkitRequestFullscreen();
-                    console.log('Fullscreen entered (webkit)');
-                  } else if (element.mozRequestFullScreen) {
-                    await element.mozRequestFullScreen();
-                    console.log('Fullscreen entered (moz)');
-                  } else if (element.msRequestFullscreen) {
-                    await element.msRequestFullscreen();
-                    console.log('Fullscreen entered (ms)');
-                  } else {
-                    console.error('Fullscreen API not supported');
-                  }
+                  await enter();
                 }
               } catch (err) {
-                console.error('Fullscreen error:', err);
+                console.error('Fullscreen toggle error:', err);
               }
             }}
             aria-label={isFullscreen ? 'Thoát toàn màn hình' : 'Phóng to toàn màn hình'}
