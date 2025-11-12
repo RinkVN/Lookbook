@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import HTMLFlipBook from 'react-pageflip';
+import LazyImage from './LazyImage';
 
 function BacHoBook() {
     // Tạo mảng các trang với ảnh từ 2.png đến 23.png
@@ -64,11 +65,10 @@ function BacHoBook() {
                     }}
                 >
                     <div className="page-content" style={{ padding: 0 }}>
-                        <img
+                        <LazyImage
                             src="/hcm.png"
                             alt="Chân dung Chủ tịch Hồ Chí Minh"
-                            loading="eager"
-                            decoding="async"
+                            priority
                             style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                         />
                     </div>
@@ -155,11 +155,9 @@ function BacHoBook() {
                                         style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                                     />
                                 ) : (
-                                    <img
+                                    <LazyImage
                                         src={`/LookbookHCM/${pageNum}.${fileExtension}`}
                                         alt={`Trang ${pageNum}`}
-                                        loading="lazy"
-                                        decoding="async"
                                         style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                                     />
                                 )}

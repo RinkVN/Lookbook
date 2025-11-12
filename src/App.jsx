@@ -64,12 +64,16 @@ function App() {
       try {
         if (docElement.requestFullscreen) {
           await docElement.requestFullscreen();
+          setIsFullscreen(true);
         } else if (docElement.webkitRequestFullscreen) {
           await docElement.webkitRequestFullscreen();
+          setIsFullscreen(true);
         } else if (docElement.mozRequestFullScreen) {
           await docElement.mozRequestFullScreen();
+          setIsFullscreen(true);
         } else if (docElement.msRequestFullscreen) {
           await docElement.msRequestFullscreen();
+          setIsFullscreen(true);
         }
       } catch (err) {
         console.error('Fullscreen error with documentElement:', err);
@@ -78,31 +82,34 @@ function App() {
     }
 
     try {
-      console.log('Attempting fullscreen with element:', element);
       if (element.requestFullscreen) {
         await element.requestFullscreen();
-        console.log('Fullscreen requested');
+        setIsFullscreen(true);
       } else if (element.webkitRequestFullscreen) {
         await element.webkitRequestFullscreen();
-        console.log('Webkit fullscreen requested');
+        setIsFullscreen(true);
       } else if (element.mozRequestFullScreen) {
         await element.mozRequestFullScreen();
-        console.log('Moz fullscreen requested');
+        setIsFullscreen(true);
       } else if (element.msRequestFullscreen) {
         await element.msRequestFullscreen();
-        console.log('MS fullscreen requested');
+        setIsFullscreen(true);
       } else {
         console.log('No fullscreen method found, trying document.documentElement');
         // Fallback: thử với document.documentElement
         const docElement = document.documentElement;
         if (docElement.requestFullscreen) {
           await docElement.requestFullscreen();
+          setIsFullscreen(true);
         } else if (docElement.webkitRequestFullscreen) {
           await docElement.webkitRequestFullscreen();
+          setIsFullscreen(true);
         } else if (docElement.mozRequestFullScreen) {
           await docElement.mozRequestFullScreen();
+          setIsFullscreen(true);
         } else if (docElement.msRequestFullscreen) {
           await docElement.msRequestFullscreen();
+          setIsFullscreen(true);
         }
       }
     } catch (err) {
@@ -128,17 +135,21 @@ function App() {
   };
 
   const toggleFullscreen = async () => {
-    const isCurrentlyFullscreen = !!(
-      document.fullscreenElement ||
-      document.webkitFullscreenElement ||
-      document.mozFullScreenElement ||
-      document.msFullscreenElement
-    );
+    try {
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
 
-    if (isCurrentlyFullscreen) {
-      await exitFullscreen();
-    } else {
-      await enterFullscreen();
+      if (isCurrentlyFullscreen) {
+        await exitFullscreen();
+      } else {
+        await enterFullscreen();
+      }
+    } catch (err) {
+      console.error('Toggle fullscreen error:', err);
     }
   };
 
@@ -217,20 +228,25 @@ function App() {
         </div>
       </div>
 
-      <div 
+      <div
         className={`book-modal ${openBookId ? 'visible' : ''}`}
       >
         <div className="book-modal-overlay" onClick={handleClose} />
-        <div 
+        <div
           className="book-modal-shell"
           ref={modalRef}
         >
           <button className="modal-close" onClick={handleClose} aria-label="Đóng sách">
             ×
           </button>
-          <button 
-            className="modal-fullscreen" 
-            onClick={toggleFullscreen} 
+          <button
+            type="button"
+            className="modal-fullscreen"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              toggleFullscreen();
+            }}
             aria-label={isFullscreen ? 'Thoát toàn màn hình' : 'Phóng to toàn màn hình'}
           >
             {isFullscreen ? (
