@@ -57,91 +57,78 @@ function App() {
 
   const enterFullscreen = async () => {
     const element = modalRef.current;
+
     if (!element) {
-      console.log('Modal ref not found, trying document.documentElement');
-      // Fallback: thử với document.documentElement
-      const docElement = document.documentElement;
-      try {
-        if (docElement.requestFullscreen) {
-          await docElement.requestFullscreen();
-          setIsFullscreen(true);
-        } else if (docElement.webkitRequestFullscreen) {
-          await docElement.webkitRequestFullscreen();
-          setIsFullscreen(true);
-        } else if (docElement.mozRequestFullScreen) {
-          await docElement.mozRequestFullScreen();
-          setIsFullscreen(true);
-        } else if (docElement.msRequestFullscreen) {
-          await docElement.msRequestFullscreen();
-          setIsFullscreen(true);
-        }
-      } catch (err) {
-        console.error('Fullscreen error with documentElement:', err);
-      }
+      console.error('Modal ref not found');
       return;
     }
 
     try {
+      // Chrome ưu tiên requestFullscreen() chuẩn
       if (element.requestFullscreen) {
         await element.requestFullscreen();
-        setIsFullscreen(true);
-      } else if (element.webkitRequestFullscreen) {
+        console.log('Fullscreen entered (standard API)');
+      }
+      // Fallback cho các trình duyệt khác
+      else if (element.webkitRequestFullscreen) {
         await element.webkitRequestFullscreen();
-        setIsFullscreen(true);
+        console.log('Fullscreen entered (webkit)');
       } else if (element.mozRequestFullScreen) {
         await element.mozRequestFullScreen();
-        setIsFullscreen(true);
+        console.log('Fullscreen entered (moz)');
       } else if (element.msRequestFullscreen) {
         await element.msRequestFullscreen();
-        setIsFullscreen(true);
+        console.log('Fullscreen entered (ms)');
       } else {
-        console.log('No fullscreen method found, trying document.documentElement');
-        // Fallback: thử với document.documentElement
-        const docElement = document.documentElement;
-        if (docElement.requestFullscreen) {
-          await docElement.requestFullscreen();
-          setIsFullscreen(true);
-        } else if (docElement.webkitRequestFullscreen) {
-          await docElement.webkitRequestFullscreen();
-          setIsFullscreen(true);
-        } else if (docElement.mozRequestFullScreen) {
-          await docElement.mozRequestFullScreen();
-          setIsFullscreen(true);
-        } else if (docElement.msRequestFullscreen) {
-          await docElement.msRequestFullscreen();
-          setIsFullscreen(true);
-        }
+        console.error('Fullscreen API not supported');
       }
     } catch (err) {
       console.error('Fullscreen error:', err);
+      // Nếu lỗi, thử với document.documentElement như fallback
+      try {
+        const docElement = document.documentElement;
+        if (docElement.requestFullscreen) {
+          await docElement.requestFullscreen();
+          console.log('Fullscreen entered (fallback to documentElement)');
+        }
+      } catch (fallbackErr) {
+        console.error('Fullscreen fallback error:', fallbackErr);
+      }
     }
   };
 
   const exitFullscreen = async () => {
     try {
+      // Chrome ưu tiên exitFullscreen() chuẩn
       if (document.exitFullscreen) {
         await document.exitFullscreen();
+        console.log('Fullscreen exited (standard API)');
       } else if (document.webkitExitFullscreen) {
         await document.webkitExitFullscreen();
+        console.log('Fullscreen exited (webkit)');
       } else if (document.mozCancelFullScreen) {
         await document.mozCancelFullScreen();
+        console.log('Fullscreen exited (moz)');
       } else if (document.msExitFullscreen) {
         await document.msExitFullscreen();
+        console.log('Fullscreen exited (ms)');
       }
-      setIsFullscreen(false);
     } catch (err) {
-      console.log('Exit fullscreen error:', err);
+      console.error('Exit fullscreen error:', err);
     }
   };
 
   const toggleFullscreen = async () => {
     try {
+      // Chrome sử dụng fullscreenElement chuẩn
       const isCurrentlyFullscreen = !!(
         document.fullscreenElement ||
         document.webkitFullscreenElement ||
         document.mozFullScreenElement ||
         document.msFullscreenElement
       );
+
+      console.log('Toggle fullscreen - Current state:', isCurrentlyFullscreen);
 
       if (isCurrentlyFullscreen) {
         await exitFullscreen();
@@ -230,11 +217,11 @@ function App() {
 
       <div
         className={`book-modal ${openBookId ? 'visible' : ''}`}
+        ref={modalRef}
       >
         <div className="book-modal-overlay" onClick={handleClose} />
         <div
           className="book-modal-shell"
-          ref={modalRef}
         >
           <button className="modal-close" onClick={handleClose} aria-label="Đóng sách">
             ×
@@ -242,10 +229,58 @@ function App() {
           <button
             type="button"
             className="modal-fullscreen"
-            onClick={(e) => {
+            onClick={async (e) => {
               e.stopPropagation();
               e.preventDefault();
-              toggleFullscreen();
+              console.log('Fullscreen button clicked');
+
+              const element = modalRef.current;
+              if (!element) {
+                console.error('Modal ref not found');
+                return;
+              }
+
+              try {
+                // Kiểm tra trạng thái fullscreen hiện tại
+                const isCurrentlyFullscreen = !!(
+                  document.fullscreenElement ||
+                  document.webkitFullscreenElement ||
+                  document.mozFullScreenElement ||
+                  document.msFullscreenElement
+                );
+
+                if (isCurrentlyFullscreen) {
+                  // Thoát fullscreen
+                  if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                  } else if (document.webkitExitFullscreen) {
+                    await document.webkitExitFullscreen();
+                  } else if (document.mozCancelFullScreen) {
+                    await document.mozCancelFullScreen();
+                  } else if (document.msExitFullscreen) {
+                    await document.msExitFullscreen();
+                  }
+                } else {
+                  // Vào fullscreen - Chrome ưu tiên API chuẩn
+                  if (element.requestFullscreen) {
+                    await element.requestFullscreen();
+                    console.log('Fullscreen entered (Chrome standard API)');
+                  } else if (element.webkitRequestFullscreen) {
+                    await element.webkitRequestFullscreen();
+                    console.log('Fullscreen entered (webkit)');
+                  } else if (element.mozRequestFullScreen) {
+                    await element.mozRequestFullScreen();
+                    console.log('Fullscreen entered (moz)');
+                  } else if (element.msRequestFullscreen) {
+                    await element.msRequestFullscreen();
+                    console.log('Fullscreen entered (ms)');
+                  } else {
+                    console.error('Fullscreen API not supported');
+                  }
+                }
+              } catch (err) {
+                console.error('Fullscreen error:', err);
+              }
             }}
             aria-label={isFullscreen ? 'Thoát toàn màn hình' : 'Phóng to toàn màn hình'}
           >

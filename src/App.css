@@ -543,6 +543,51 @@ html {
   box-shadow: none;
 }
 
+/* Fullscreen mode styles - tối ưu cho Chrome */
+.book-modal:fullscreen {
+  background: rgba(12, 10, 9, 0.95);
+  padding: 0;
+}
+
+.book-modal:-webkit-full-screen {
+  background: rgba(12, 10, 9, 0.95);
+  padding: 0;
+}
+
+.book-modal:-moz-full-screen {
+  background: rgba(12, 10, 9, 0.95);
+  padding: 0;
+}
+
+.book-modal:-ms-fullscreen {
+  background: rgba(12, 10, 9, 0.95);
+  padding: 0;
+}
+
+.book-modal:fullscreen .book-modal-shell {
+  padding: 20px;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+.book-modal:-webkit-full-screen .book-modal-shell {
+  padding: 20px;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+.book-modal:-moz-full-screen .book-modal-shell {
+  padding: 20px;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+.book-modal:-ms-fullscreen .book-modal-shell {
+  padding: 20px;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
 @media (max-width: 1024px) {
 
   html,
