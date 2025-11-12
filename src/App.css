@@ -470,7 +470,8 @@ html {
 
 .book-modal.visible .book-modal-shell {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0) scale(0.7);
+  margin-bottom: 30px;
 }
 
 .book-modal.visible .book-modal-content {
@@ -1024,18 +1025,18 @@ html {
 /* Tablet landscape */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
   .book-modal-content {
-    transform: scale(0.11) translateY(20px);
-    max-width: 95vw;
-    max-height: 95vh;
+    transform: scale(0.04) translateY(0px);
+    max-width: 85vw;
+    max-height: 85vh;
   }
 
   .book-modal.visible .book-modal-content {
-    transform: scale(0.11) translateY(0);
+    transform: scale(0.04) translateY(0);
   }
 
   .lookbook-flipbook {
-    width: min(80vw, 60rem);
-    height: min(75vh, 80rem);
+    width: min(80vw, 50rem);
+    height: min(75vh, 70rem);
     max-width: 100%;
     max-height: 100%;
   }
