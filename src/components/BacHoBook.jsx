@@ -5,6 +5,7 @@ function BacHoBook() {
     // Tạo mảng các trang với ảnh từ 2.png đến 23.png
     const pages = Array.from({ length: 22 }, (_, i) => i + 2);
     const flipBook = useRef();
+    const videoRefs = useRef({});
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -56,8 +57,35 @@ function BacHoBook() {
                             <div className="page-content" style={{ padding: 0 }}>
                                 {isVideo ? (
                                     <video
+                                        ref={(el) => {
+                                            if (el) {
+                                                videoRefs.current[pageNum] = el;
+                                                // Tạo observer ngay khi video được mount
+                                                const observer = new IntersectionObserver(
+                                                    (entries) => {
+                                                        entries.forEach((entry) => {
+                                                            if (entry.isIntersecting) {
+                                                                el.play().catch((err) => {
+                                                                    console.log('Video play failed:', err);
+                                                                });
+                                                            } else {
+                                                                el.pause();
+                                                            }
+                                                        });
+                                                    },
+                                                    { threshold: 0.5 }
+                                                );
+                                                observer.observe(el);
+                                                // Lưu observer để cleanup sau
+                                                if (!el._observer) {
+                                                    el._observer = observer;
+                                                }
+                                            } else if (videoRefs.current[pageNum]?._observer) {
+                                                videoRefs.current[pageNum]._observer.disconnect();
+                                                delete videoRefs.current[pageNum];
+                                            }
+                                        }}
                                         src={`/LookbookHCM/${pageNum}.${fileExtension}`}
-                                        autoPlay
                                         loop
                                         playsInline
                                         controls
