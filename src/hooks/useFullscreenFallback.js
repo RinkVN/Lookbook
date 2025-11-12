@@ -68,7 +68,7 @@ export default function useFullscreenFallback() {
             }
         }
 
-        el.dataset.fsFallback = 'true';
+        el.dataset.fsFallback = 'true'; 
         document.documentElement.style.overflow = 'hidden';
         setIsFullscreen(true);
     }, []);

@@ -130,7 +130,7 @@ function BacHoBook() {
                                                                 });
                                                             } else {
                                                                 el.pause();
-                                                            }
+                                                            }   
                                                         });
                                                     },
                                                     { threshold: 0.5 }
