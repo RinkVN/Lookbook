@@ -782,15 +782,14 @@ html {
 /* Tablet landscape */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
   .book-modal-content {
-    transform: scale(0.65) translateY(30px);
+    transform: scale(0.36) translateY(30px);
     max-width: 95vw;
     max-height: 95vh;
   }
 
   .book-modal.visible .book-modal-content {
-    transform: scale(0.65) translateY(0);
+    transform: scale(0.36) translateY(0);
   }
-
   .lookbook-flipbook {
     max-width: 100%;
     max-height: 100%;
