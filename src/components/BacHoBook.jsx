@@ -67,6 +67,8 @@ function BacHoBook() {
                         <img
                             src="/hcm.png"
                             alt="Chân dung Chủ tịch Hồ Chí Minh"
+                            loading="eager"
+                            decoding="async"
                             style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                         />
                     </div>
@@ -147,12 +149,17 @@ function BacHoBook() {
                                         loop
                                         playsInline
                                         controls
+                                        loading="lazy"
+                                        decoding="async"
+                                        preload="metadata"
                                         style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                                     />
                                 ) : (
                                     <img
                                         src={`/LookbookHCM/${pageNum}.${fileExtension}`}
                                         alt={`Trang ${pageNum}`}
+                                        loading="lazy"
+                                        decoding="async"
                                         style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                                     />
                                 )}

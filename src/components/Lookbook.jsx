@@ -69,6 +69,8 @@ function Lookbook() {
             <img
               src="/poster.jpg"
               alt="Thành cổ Quảng Trị - Poster"
+              loading="eager"
+              decoding="async"
               style={{ width: '100%', height: '100%', objectFit: 'fill' }}
             />
           </div>
@@ -155,12 +157,17 @@ function Lookbook() {
                     loop
                     playsInline
                     controls
+                    preload="metadata"
+                    loading="lazy"
+                    decoding="async"
                     style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                   />
                 ) : (
                   <img
                     src={`/Lookbook/${pageNum}.${fileExtension}`}
                     alt={`Trang ${pageNum}`}
+                    loading="lazy"
+                    decoding="async"
                     style={{ width: '100%', height: '100%', objectFit: 'fill' }}
                   />
                 )}

@@ -57,21 +57,56 @@ function App() {
 
   const enterFullscreen = async () => {
     const element = modalRef.current;
-    if (!element) return;
+    if (!element) {
+      console.log('Modal ref not found, trying document.documentElement');
+      // Fallback: thử với document.documentElement
+      const docElement = document.documentElement;
+      try {
+        if (docElement.requestFullscreen) {
+          await docElement.requestFullscreen();
+        } else if (docElement.webkitRequestFullscreen) {
+          await docElement.webkitRequestFullscreen();
+        } else if (docElement.mozRequestFullScreen) {
+          await docElement.mozRequestFullScreen();
+        } else if (docElement.msRequestFullscreen) {
+          await docElement.msRequestFullscreen();
+        }
+      } catch (err) {
+        console.error('Fullscreen error with documentElement:', err);
+      }
+      return;
+    }
 
     try {
+      console.log('Attempting fullscreen with element:', element);
       if (element.requestFullscreen) {
         await element.requestFullscreen();
+        console.log('Fullscreen requested');
       } else if (element.webkitRequestFullscreen) {
         await element.webkitRequestFullscreen();
+        console.log('Webkit fullscreen requested');
       } else if (element.mozRequestFullScreen) {
         await element.mozRequestFullScreen();
+        console.log('Moz fullscreen requested');
       } else if (element.msRequestFullscreen) {
         await element.msRequestFullscreen();
+        console.log('MS fullscreen requested');
+      } else {
+        console.log('No fullscreen method found, trying document.documentElement');
+        // Fallback: thử với document.documentElement
+        const docElement = document.documentElement;
+        if (docElement.requestFullscreen) {
+          await docElement.requestFullscreen();
+        } else if (docElement.webkitRequestFullscreen) {
+          await docElement.webkitRequestFullscreen();
+        } else if (docElement.mozRequestFullScreen) {
+          await docElement.mozRequestFullScreen();
+        } else if (docElement.msRequestFullscreen) {
+          await docElement.msRequestFullscreen();
+        }
       }
-      setIsFullscreen(true);
     } catch (err) {
-      console.log('Fullscreen error:', err);
+      console.error('Fullscreen error:', err);
     }
   };
 
@@ -92,11 +127,18 @@ function App() {
     }
   };
 
-  const toggleFullscreen = () => {
-    if (isFullscreen) {
-      exitFullscreen();
+  const toggleFullscreen = async () => {
+    const isCurrentlyFullscreen = !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullScreenElement ||
+      document.msFullscreenElement
+    );
+
+    if (isCurrentlyFullscreen) {
+      await exitFullscreen();
     } else {
-      enterFullscreen();
+      await enterFullscreen();
     }
   };
 
@@ -177,10 +219,12 @@ function App() {
 
       <div 
         className={`book-modal ${openBookId ? 'visible' : ''}`}
-        ref={modalRef}
       >
         <div className="book-modal-overlay" onClick={handleClose} />
-        <div className="book-modal-shell">
+        <div 
+          className="book-modal-shell"
+          ref={modalRef}
+        >
           <button className="modal-close" onClick={handleClose} aria-label="Đóng sách">
             ×
           </button>
