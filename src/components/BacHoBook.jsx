@@ -26,8 +26,8 @@ function BacHoBook() {
         <div className="lookbook-wrapper">
             <HTMLFlipBook
                 ref={flipBook}
-                width={794}
-                height={1123}
+                width={596}
+                height={842}
                 maxShadowOpacity={0.5}
                 drawShadow={true}
                 showCover={true}

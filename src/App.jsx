@@ -37,7 +37,9 @@ const bookComponents = {
 
 function App() {
   const [openBookId, setOpenBookId] = useState(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const ActiveBook = openBookId ? bookComponents[openBookId] : null;
+  const modalRef = React.useRef(null);
 
   const handleOpen = (book) => {
     if (book.interactive) {
@@ -46,19 +48,97 @@ function App() {
   };
 
   const handleClose = () => {
+    // Thoát fullscreen trước khi đóng
+    if (isFullscreen) {
+      exitFullscreen();
+    }
     setOpenBookId(null);
+  };
+
+  const enterFullscreen = async () => {
+    const element = modalRef.current;
+    if (!element) return;
+
+    try {
+      if (element.requestFullscreen) {
+        await element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        await element.webkitRequestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        await element.mozRequestFullScreen();
+      } else if (element.msRequestFullscreen) {
+        await element.msRequestFullscreen();
+      }
+      setIsFullscreen(true);
+    } catch (err) {
+      console.log('Fullscreen error:', err);
+    }
+  };
+
+  const exitFullscreen = async () => {
+    try {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        await document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        await document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        await document.msExitFullscreen();
+      }
+      setIsFullscreen(false);
+    } catch (err) {
+      console.log('Exit fullscreen error:', err);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
   };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && openBookId) {
-        handleClose();
+        const isCurrentlyFullscreen = !!(
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement ||
+          document.msFullscreenElement
+        );
+        if (isCurrentlyFullscreen) {
+          exitFullscreen();
+        } else {
+          handleClose();
+        }
       }
     };
 
+    const handleFullscreenChange = () => {
+      const isCurrentlyFullscreen = !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      );
+      setIsFullscreen(isCurrentlyFullscreen);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
   }, [openBookId]);
 
@@ -95,11 +175,29 @@ function App() {
         </div>
       </div>
 
-      <div className={`book-modal ${openBookId ? 'visible' : ''}`}>
+      <div 
+        className={`book-modal ${openBookId ? 'visible' : ''}`}
+        ref={modalRef}
+      >
         <div className="book-modal-overlay" onClick={handleClose} />
         <div className="book-modal-shell">
           <button className="modal-close" onClick={handleClose} aria-label="Đóng sách">
             ×
+          </button>
+          <button 
+            className="modal-fullscreen" 
+            onClick={toggleFullscreen} 
+            aria-label={isFullscreen ? 'Thoát toàn màn hình' : 'Phóng to toàn màn hình'}
+          >
+            {isFullscreen ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+              </svg>
+            )}
           </button>
           <div className="book-modal-content">{ActiveBook && <ActiveBook />}</div>
         </div>
