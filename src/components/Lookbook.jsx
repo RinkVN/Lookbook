@@ -46,17 +46,34 @@ function Lookbook() {
         </div>
 
         {/* Các trang nội dung - chỉ hiển thị ảnh toàn trang */}
-        {pages.map((pageNum) => (
-          <div className="page" key={pageNum} style={{ background: 'transparent' }}>
-            <div className="page-content" style={{ padding: 0 }}>
-              <img
-                src={`/Lookbook/${pageNum}.png`}
-                alt={`Trang ${pageNum}`}
-                style={{ width: '100%', height: '100%', objectFit: 'fill' }}
-              />
+        {pages.map((pageNum) => {
+          // Kiểm tra xem file là video (.mp4) hay ảnh (.png)
+          const isVideo = pageNum === 26 || pageNum === 27;
+          const fileExtension = isVideo ? 'mp4' : 'png';
+
+          return (
+            <div className="page" key={pageNum} style={{ background: 'transparent' }}>
+              <div className="page-content" style={{ padding: 0 }}>
+                {isVideo ? (
+                  <video
+                    src={`/Lookbook/${pageNum}.${fileExtension}`}
+                    autoPlay
+                    loop
+                    playsInline
+                    controls
+                    style={{ width: '100%', height: '100%', objectFit: 'fill' }}
+                  />
+                ) : (
+                  <img
+                    src={`/Lookbook/${pageNum}.${fileExtension}`}
+                    alt={`Trang ${pageNum}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'fill' }}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </HTMLFlipBook>
     </div>
   );
