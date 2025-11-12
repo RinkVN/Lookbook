@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import HTMLFlipBook from "react-pageflip";
 
 function Lookbook() {
@@ -6,6 +6,101 @@ function Lookbook() {
   const pages = Array.from({ length: 26 }, (_, i) => i + 2);
   const flipBook = useRef();
   const videoRefs = useRef({});
+  const wrapperRef = useRef(null);
+
+  // Tỷ lệ gốc của sách
+  const originalWidth = 794;
+  const originalHeight = 1123;
+  const aspectRatio = originalWidth / originalHeight;
+
+  const [bookSize, setBookSize] = useState({
+    width: originalWidth,
+    height: originalHeight
+  });
+
+  // Tính toán kích thước sách dựa trên viewport
+  const calculateBookSize = () => {
+    if (!wrapperRef.current) return;
+
+    const wrapper = wrapperRef.current;
+    const wrapperRect = wrapper.getBoundingClientRect();
+
+    // Xác định padding dựa trên kích thước màn hình
+    const isMobile = window.innerWidth <= 768;
+    const padding = isMobile ? 60 : 100; // Padding lớn hơn cho mobile
+
+    const availableWidth = wrapperRect.width - padding;
+    const availableHeight = wrapperRect.height - padding;
+
+    let newWidth, newHeight;
+
+    // Tính toán để fit vào viewport nhưng giữ tỷ lệ
+    if (availableWidth / availableHeight > aspectRatio) {
+      // Viewport rộng hơn, fit theo chiều cao
+      newHeight = Math.min(availableHeight, originalHeight);
+      newWidth = newHeight * aspectRatio;
+    } else {
+      // Viewport cao hơn, fit theo chiều rộng
+      newWidth = Math.min(availableWidth, originalWidth);
+      newHeight = newWidth / aspectRatio;
+    }
+
+    // Thêm hệ số scale down để sách không quá to (0.85 = 85% kích thước tính được)
+    const scaleFactor = isMobile ? 0.8 : 0.85;
+    newWidth = newWidth * scaleFactor;
+    newHeight = newHeight * scaleFactor;
+
+    // Đảm bảo không vượt quá kích thước gốc
+    newWidth = Math.min(newWidth, originalWidth);
+    newHeight = Math.min(newHeight, originalHeight);
+
+    setBookSize({ width: Math.round(newWidth), height: Math.round(newHeight) });
+  };
+
+  useEffect(() => {
+    // Delay nhỏ để đảm bảo DOM đã render
+    const timer = setTimeout(() => {
+      calculateBookSize();
+    }, 100);
+
+    const handleResize = () => {
+      // Delay sau khi resize để viewport ổn định
+      setTimeout(() => {
+        calculateBookSize();
+      }, 100);
+    };
+
+    const handleOrientationChange = () => {
+      // Delay lâu hơn cho orientation change
+      setTimeout(() => {
+        calculateBookSize();
+      }, 300);
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    // Cập nhật lại khi modal mở (nếu có)
+    const observer = new MutationObserver(() => {
+      calculateBookSize();
+    });
+
+    if (wrapperRef.current) {
+      observer.observe(wrapperRef.current, {
+        attributes: true,
+        attributeFilter: ['style', 'class'],
+        childList: false,
+        subtree: false
+      });
+    }
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -23,11 +118,11 @@ function Lookbook() {
   }, []);
 
   return (
-    <div className="lookbook-wrapper">
+    <div className="lookbook-wrapper" ref={wrapperRef}>
       <HTMLFlipBook
         ref={flipBook}
-        width={794}
-        height={1123}
+        width={bookSize.width}
+        height={bookSize.height}
         maxShadowOpacity={0.5}
         drawShadow={true}
         showCover={true}

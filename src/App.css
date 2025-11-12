@@ -198,11 +198,20 @@ html {
   position: relative;
   overflow: visible;
   padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .lookbook-flipbook {
   overflow: visible !important;
+  max-width: 100%;
+  max-height: 100%;
 }
+
+/* Responsive flipbook sizing - không cần scale nữa vì đã tự động tính toán */
 
 .lookbook-wrapper::before,
 .lookbook-wrapper::after {
@@ -372,6 +381,8 @@ html {
   align-items: center;
   justify-content: center;
   padding: 0 28px 28px;
+  width: 100%;
+  height: 100%;
 
   opacity: 0;
   transform: translateY(20px) scale(0.92);
@@ -397,10 +408,14 @@ html {
   opacity: 0;
   transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s ease;
   max-height: 90vh;
+  max-width: 90vw;
   overflow: visible;
   border-radius: 18px;
   padding: 0;
   background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .book-modal.visible .book-modal-shell {
@@ -456,22 +471,418 @@ html {
 
   .book-modal-content {
     transform: scale(0.62) translateY(60px);
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .book-modal.visible .book-modal-content {
+    transform: scale(0.62) translateY(0);
+  }
+
+  .book-modal-shell {
+    padding: 0 16px 16px;
+  }
+
+  .lookbook-wrapper {
+    padding: 12px;
   }
 }
 
 @media (max-width: 768px) {
+  #root {
+    padding: 12px;
+  }
+
   .lookbook-image-frame {
     height: 200px;
   }
 
+  .bookshelf-scene {
+    height: auto;
+    min-height: 300px;
+    padding: 20px 0;
+  }
+
+  .bookshelf {
+    width: 95%;
+    max-width: 100%;
+  }
+
+  .shelf-books {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 0 16px;
+    justify-content: center;
+  }
+
+  .book-cover {
+    width: 120px;
+    height: 170px;
+    padding: 16px 12px;
+  }
+
+  .book-cover-title {
+    font-size: 0.9rem;
+  }
+
+  .book-cover-tag {
+    font-size: 0.65rem;
+  }
+
+  .book-cover-year {
+    font-size: 0.7rem;
+  }
+
   .book-modal-content {
-    transform: scale(0.5) translateY(60px);
+    transform: scale(0.45) translateY(20px);
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+  }
+
+  .book-modal.visible .book-modal-content {
+    transform: scale(0.45) translateY(0);
+  }
+
+  .book-modal-shell {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lookbook-wrapper {
+    padding: 4px;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lookbook-flipbook {
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .modal-close {
-    top: -32px;
-    right: -14px;
-    width: 50px;
-    height: 56px;
+    top: 8px;
+    right: 8px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+    background: rgba(32, 24, 19, 0.95);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .page-content {
+    padding: 20px 16px;
+  }
+
+  .lookbook-title {
+    font-size: 1.1rem;
+  }
+
+  .lookbook-quote {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+
+  .lookbook-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 8px;
+  }
+
+  .bookshelf-scene {
+    min-height: 250px;
+    padding: 16px 0;
+  }
+
+  .shelf-books {
+    gap: 12px;
+    padding: 0 8px;
+  }
+
+  .book-cover {
+    width: 100px;
+    height: 140px;
+    padding: 12px 10px;
+  }
+
+  .book-cover-title {
+    font-size: 0.8rem;
+  }
+
+  .book-cover-tag {
+    font-size: 0.6rem;
+  }
+
+  .book-cover-year {
+    font-size: 0.65rem;
+  }
+
+  .book-modal-content {
+    transform: scale(0.4) translateY(15px);
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+
+  .book-modal.visible .book-modal-content {
+    transform: scale(0.4) translateY(0);
+  }
+
+  .lookbook-wrapper {
+    padding: 2px;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+
+  .lookbook-flipbook {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .page-content {
+    padding: 16px 12px;
+  }
+
+  .lookbook-image-frame {
+    height: 160px;
+  }
+
+  .lookbook-title {
+    font-size: 1rem;
+  }
+
+  .lookbook-quote {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+
+  .lookbook-description {
+    font-size: 0.8rem;
+  }
+
+  .modal-close {
+    top: 4px;
+    right: 4px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .book-cover {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .modal-close {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .book-cover--active:active {
+    transform: translateY(-5px) rotateY(-3deg) scale(1.02);
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .bookshelf-scene {
+    height: auto;
+    min-height: 200px;
+  }
+
+  .book-modal {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .book-modal-content {
+    transform: scale(0.5) translateY(10px);
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+  }
+
+  .book-modal.visible .book-modal-content {
+    transform: scale(0.5) translateY(0);
+  }
+
+  .book-modal-shell {
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .lookbook-wrapper {
+    padding: 2px;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+  }
+
+  .lookbook-flipbook {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .modal-close {
+    top: 4px;
+    right: 4px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .page-content {
+    padding: 12px 10px;
+  }
+}
+
+/* Landscape mobile - small screens */
+@media (max-width: 480px) and (orientation: landscape) {
+  .book-modal-content {
+    transform: scale(0.45) translateY(10px);
+  }
+
+  .book-modal.visible .book-modal-content {
+    transform: scale(0.45) translateY(0);
+  }
+
+  .lookbook-flipbook {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .modal-close {
+    top: 2px;
+    right: 2px;
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+/* Tablet landscape */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .book-modal-content {
+    transform: scale(0.65) translateY(30px);
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .book-modal.visible .book-modal-content {
+    transform: scale(0.65) translateY(0);
+  }
+
+  .lookbook-flipbook {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+/* Prevent text selection on mobile for better touch experience */
+@media (max-width: 768px) {
+
+  .book-cover,
+  .modal-close {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+}
+
+/* Smooth scrolling for mobile */
+@media (max-width: 768px) {
+  html {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fullscreen modal on mobile */
+  .book-modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+
+  .book-modal-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Video controls on mobile */
+  video {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  video::-webkit-media-controls-panel {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  video::-webkit-media-controls-play-button {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
+
+  /* Better touch targets */
+  .page {
+    touch-action: pan-y pinch-zoom;
+  }
+
+  /* Prevent body scroll when modal is open */
+  body:has(.book-modal.visible) {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Landscape specific improvements */
+@media (max-width: 768px) and (orientation: landscape) {
+
+  /* Prevent body scroll when modal is open in landscape */
+  body:has(.book-modal.visible) {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Ensure modal takes full viewport */
+  .book-modal {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* Optimize flipbook for landscape viewing */
+  .lookbook-flipbook .stf__parent {
+    max-width: 100%;
+    max-height: 100%;
   }
 }
