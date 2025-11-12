@@ -197,7 +197,7 @@ html {
 .lookbook-wrapper {
   position: relative;
   overflow: visible;
-  padding: 18px;
+  padding: 1.125rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,11 +207,61 @@ html {
 
 .lookbook-flipbook {
   overflow: visible !important;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
 }
 
-/* Responsive flipbook sizing - không cần scale nữa vì đã tự động tính toán */
+/* Responsive flipbook sizing với vh, vw, rem, em */
+.lookbook-flipbook .stf__parent {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Đảm bảo touch/click events hoạt động trên flipbook */
+.lookbook-flipbook {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+.lookbook-flipbook .stf__item {
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+/* Đảm bảo page có thể nhận touch events */
+.lookbook-flipbook .page {
+  pointer-events: auto !important;
+  touch-action: manipulation;
+
+}
+
+/* Page content không chặn events nhưng vẫn hiển thị */
+.page-content {
+  pointer-events: none;
+  
+}
+
+/* Image và video không chặn touch events của page */
+.page-content img,
+.page-content video {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* Nhưng vẫn cho phép video controls hoạt động */
+.page-content video::-webkit-media-controls,
+.page-content video::-webkit-media-controls-panel,
+.page-content video::-webkit-media-controls-play-button,
+.page-content video::-webkit-media-controls-start-playback-button {
+  pointer-events: auto;
+}
 
 .lookbook-wrapper::before,
 .lookbook-wrapper::after {
@@ -484,7 +534,17 @@ html {
   }
 
   .lookbook-wrapper {
-    padding: 12px;
+    padding: 0.75rem;
+  }
+
+  .lookbook-flipbook {
+    width: min(85vw, 55rem);
+    height: min(80vh, 75rem);
+  }
+
+  .lookbook-flipbook .stf__parent {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 
@@ -555,7 +615,7 @@ html {
   }
 
   .lookbook-wrapper {
-    padding: 4px;
+    padding: 0.25rem;
     max-width: 100vw;
     max-height: 100vh;
     width: 100%;
@@ -566,8 +626,15 @@ html {
   }
 
   .lookbook-flipbook {
+    width: min(90vw, 50rem);
+    height: min(85vh, 70rem);
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .lookbook-flipbook .stf__parent {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .modal-close {
@@ -642,14 +709,21 @@ html {
   }
 
   .lookbook-wrapper {
-    padding: 2px;
+    padding: 0.125rem;
     max-width: 100vw;
     max-height: 100vh;
   }
 
   .lookbook-flipbook {
+    width: min(95vw, 40rem);
+    height: min(90vh, 60rem);
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .lookbook-flipbook .stf__parent {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .page-content {
@@ -730,7 +804,7 @@ html {
   }
 
   .lookbook-wrapper {
-    padding: 2px;
+    padding: 0.125rem;
     max-width: 100vw;
     max-height: 100vh;
     width: 100%;
@@ -738,8 +812,15 @@ html {
   }
 
   .lookbook-flipbook {
+    width: min(92vw, 45rem);
+    height: min(88vh, 65rem);
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .lookbook-flipbook .stf__parent {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .modal-close {
@@ -758,16 +839,23 @@ html {
 /* Landscape mobile - small screens */
 @media (max-width: 480px) and (orientation: landscape) {
   .book-modal-content {
-    transform: scale(0.45) translateY(10px);
+    transform: scale(0.2) translateY(10px);
   }
 
   .book-modal.visible .book-modal-content {
-    transform: scale(0.45) translateY(0);
+    transform: scale(0.2) translateY(0);
   }
 
   .lookbook-flipbook {
+    width: min(90vw, 38rem);
+    height: min(85vh, 58rem);
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .lookbook-flipbook .stf__parent {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .modal-close {
@@ -790,9 +878,17 @@ html {
   .book-modal.visible .book-modal-content {
     transform: scale(0.2) translateY(0);
   }
+
   .lookbook-flipbook {
+    width: min(80vw, 60rem);
+    height: min(75vh, 80rem);
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .lookbook-flipbook .stf__parent {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 
@@ -851,6 +947,31 @@ html {
   /* Better touch targets */
   .page {
     touch-action: pan-y pinch-zoom;
+  }
+
+  /* Đảm bảo touch events hoạt động trên flipbook */
+  .lookbook-flipbook,
+  .lookbook-flipbook * {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+  }
+
+  /* Cho phép click/touch trên phần bên phải để lật trang */
+  .lookbook-flipbook .stf__item {
+    pointer-events: auto;
+  }
+
+  /* Đảm bảo video và image không chặn touch events */
+  .page-content img,
+  .page-content video {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Nhưng vẫn cho phép controls trên video */
+  .page-content video::-webkit-media-controls {
+    pointer-events: auto;
   }
 
   /* Prevent body scroll when modal is open */
